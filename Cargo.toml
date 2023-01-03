@@ -2,6 +2,12 @@
 name = "mdbook-emojicodes"
 version = "0.1.0"
 edition = "2021"
+license = "MIT"
+description = "MDBook Preprocessor for converting your emojicodes (: cat :) into real emojis"
+readme = "README.md"
+repository = "https://github.com/blyxyas/mdbook-emojicodes"
+keywords = ["emoji", "mdbook", "mdbook-preprocessor", "preprocessor", "emojicodes"]
+categories = ["development-tools", "parser-implementations", "encoding"]
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
