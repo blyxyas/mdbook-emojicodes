@@ -71,5 +71,5 @@ Now, when you run `mdbook build`, all your emojis will be converted.
 
 #### License
 
-This software uses the **MIT License**. Check the file [LICENSE]() for more details
+This software uses the **MIT License**. Check the file [LICENSE](https://github.com/blyxyas/mdbook-emojicodes/blob/master/LICENSE) for more details
 
