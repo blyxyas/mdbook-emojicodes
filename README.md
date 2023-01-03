@@ -35,7 +35,7 @@ Write this in your `book.toml`:
 [preprocessor.emojicodes]
 ```
 
-Now, **:sparkles: It's ready to use! :sparkles:**.
+Now, **✨ It's ready to use! ✨**.
 
 You can use emojis by writing an emojicode in your files.
 
