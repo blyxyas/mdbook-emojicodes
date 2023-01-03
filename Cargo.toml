@@ -1,0 +1,14 @@
+[package]
+name = "mdbook-emojicodes"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+mdbook = { version = "0.4.25", default-features = false}
+anyhow = "1.0"
+mdbook-preprocessor-boilerplate = "0.1.1"
+emojis = "0.5.2"
+regex = "1.7.0"
+lazy_static = "1.4.0"
