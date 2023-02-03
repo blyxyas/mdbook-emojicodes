@@ -27,7 +27,7 @@ $	cd mdbook-emojicodes;
 	cargo install --path .
 ```
 
-## :question: Usage
+## ❓ Usage
 
 Write this in your `book.toml`:
 
