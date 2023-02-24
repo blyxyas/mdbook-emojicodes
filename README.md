@@ -63,6 +63,27 @@ I love cats 🐱 and dogs 🐶, I have two, one's gray, like a raccoon 🦝 and 
 
 Now, when you run `mdbook build`, all your emojis will be converted.
 
+## 🎡 Custom Emojis
+
+You can use your own emojis as `.svg` files. Just create a directory called `custom_emojis` in `src`; there you can include your custom emojis, like this:
+
+```
+.
+├── book.toml
+└── src
+    ├── chapter_1.md
+    ├── custom_emojis
+    │   └── myemoji.svg
+    └── SUMMARY.md
+```
+
+```md
+# Chapter 1
+:myemoji:
+```
+
+These emojis will be automatically sized to the correct size.
+
 ---
 
 #### Stargazers
