@@ -24,7 +24,6 @@ impl Preprocessor for EmojiCodesPreprocessor {
 		let mut custom_emojis = (Vec::new(), Vec::new());
 		#[cfg(feature = "custom_emojis")]
 		parse_custom_emojis(&mut custom_emojis);
-		dbg!(&custom_emojis);
 		book.for_each_mut(move |section: &mut BookItem| {
             if let BookItem::Chapter(ref mut ch) = section {
                 lazy_static! {
@@ -44,8 +43,6 @@ impl Preprocessor for EmojiCodesPreprocessor {
                             .replace(capt.as_str(), emoji.as_str());
 							known_emojis.push(capt.as_str());
                     } else if let Some(emoji) = get_custom_emoji(&buf[capt.start() + 1..capt.end() - 1], &custom_emojis) {
-						dbg!(&emoji
-						);
 						ch.content = ch.content
 						.replace(capt.as_str(), emoji.as_str());
 						known_emojis.push(capt.as_str());
@@ -89,7 +86,7 @@ fn get_custom_emoji<'a>(content: &'a str, buf: &'a (Vec<String>, Vec<String>)) -
     use std::fs::read_to_string;
 
 	if let Some(position) = buf.0.iter().position(|x| x == content) {
-		return Some(format!("<svg>{}</svg>", read_to_string(buf.1[position].clone()).unwrap_or_else(|_| panic!("Couldn't read file {}", buf.1[position]))));
+		return Some(format!("<svg style=\"height:2.5rem; width:2.5rem;position:relative;top:0.5em;\">{}</svg>", read_to_string(buf.1[position].clone()).unwrap_or_else(|_| panic!("Couldn't read file {}", buf.1[position]))));
 	}
 	None
 }
