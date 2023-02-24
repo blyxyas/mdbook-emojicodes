@@ -18,3 +18,7 @@ mdbook-preprocessor-boilerplate = "0.1.1"
 emojis = "0.5.2"
 regex = "1.7.0"
 lazy_static = "1.4.0"
+
+[features]
+default = ["custom_emojis"]
+custom_emojis = []

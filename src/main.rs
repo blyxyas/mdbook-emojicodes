@@ -21,7 +21,11 @@ impl Preprocessor for EmojiCodesPreprocessor {
     }
 
     fn run(&self, _: &PreprocessorContext, mut book: Book) -> Result<Book> {
-        book.for_each_mut(|section: &mut BookItem| {
+		let mut custom_emojis = (Vec::new(), Vec::new());
+		#[cfg(feature = "custom_emojis")]
+		parse_custom_emojis(&mut custom_emojis);
+		dbg!(&custom_emojis);
+		book.for_each_mut(move |section: &mut BookItem| {
             if let BookItem::Chapter(ref mut ch) = section {
                 lazy_static! {
                     static ref RE: Regex = Regex::new(r":(.*?):").unwrap();
@@ -39,7 +43,13 @@ impl Preprocessor for EmojiCodesPreprocessor {
                         ch.content = ch.content
                             .replace(capt.as_str(), emoji.as_str());
 							known_emojis.push(capt.as_str());
-                    };
+                    } else if let Some(emoji) = get_custom_emoji(&buf[capt.start() + 1..capt.end() - 1], &custom_emojis) {
+						dbg!(&emoji
+						);
+						ch.content = ch.content
+						.replace(capt.as_str(), emoji.as_str());
+						known_emojis.push(capt.as_str());
+					}
                 }
             };
         });
@@ -49,4 +59,37 @@ impl Preprocessor for EmojiCodesPreprocessor {
     fn supports_renderer(&self, renderer: &str) -> bool {
         renderer != "not-supported"
     }
+}
+
+#[cfg(feature = "custom_emojis")]
+fn parse_custom_emojis<'a>(buf: &'a mut (Vec<String>, Vec<String>)) {
+	use std::path::Path;
+	let mut cd = std::env::current_dir().expect("Couldn't get current directory.");
+	if !cd.ends_with("src") {
+		cd.push("src");
+	}
+
+	cd.push("custom_emojis");
+	if !Path::new(&cd).exists() {
+		return; // No custom emojis are used
+	};
+
+	for file in cd.read_dir().expect("Couldn't read directory `custom_emojis`").filter_map(|x| x.ok()) {
+		if file.file_name().to_string_lossy().ends_with(".svg") {
+			let file_name = file.file_name().to_string_lossy().to_string();
+			buf.0.push(file_name[..file_name.len() - 4].to_string());
+			buf.1.push(file.path().to_string_lossy().to_string());
+		}
+	}
+}
+
+#[cfg(feature = "custom_emojis")]
+// Buf = (filenames, paths);
+fn get_custom_emoji<'a>(content: &'a str, buf: &'a (Vec<String>, Vec<String>)) -> Option<String> {
+    use std::fs::read_to_string;
+
+	if let Some(position) = buf.0.iter().position(|x| x == content) {
+		return Some(format!("<svg>{}</svg>", read_to_string(buf.1[position].clone()).unwrap_or_else(|_| panic!("Couldn't read file {}", buf.1[position]))));
+	}
+	None
 }
