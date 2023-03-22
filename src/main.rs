@@ -21,7 +21,7 @@ impl Preprocessor for EmojiCodesPreprocessor {
     }
 
     fn run(&self, _: &PreprocessorContext, mut book: Book) -> Result<Book> {
-		let mut custom_emojis = (Vec::new(), Vec::new());
+		let mut custom_emojis = Vec::new();
 		#[cfg(feature = "custom_emojis")]
 		parse_custom_emojis(&mut custom_emojis);
 		book.for_each_mut(move |section: &mut BookItem| {
@@ -59,13 +59,11 @@ impl Preprocessor for EmojiCodesPreprocessor {
 }
 
 #[cfg(feature = "custom_emojis")]
-fn parse_custom_emojis<'a>(buf: &'a mut (Vec<String>, Vec<String>)) {
+fn parse_custom_emojis<'a>(buf: &'a mut Vec<String>) {
 	use std::path::Path;
 	let mut cd = std::env::current_dir().expect("Couldn't get current directory.");
-	if !cd.ends_with("src") {
-		cd.push("src");
-	}
 
+	cd.push("src");
 	cd.push("custom_emojis");
 	if !Path::new(&cd).exists() {
 		return; // No custom emojis are used
@@ -74,19 +72,16 @@ fn parse_custom_emojis<'a>(buf: &'a mut (Vec<String>, Vec<String>)) {
 	for file in cd.read_dir().expect("Couldn't read directory `custom_emojis`").filter_map(|x| x.ok()) {
 		if file.file_name().to_string_lossy().ends_with(".svg") {
 			let file_name = file.file_name().to_string_lossy().to_string();
-			buf.0.push(file_name[..file_name.len() - 4].to_string());
-			buf.1.push(file.path().to_string_lossy().to_string());
+			buf.push(file_name[..file_name.len() - 4].to_string());
 		}
 	}
 }
 
 #[cfg(feature = "custom_emojis")]
 // Buf = (filenames, paths);
-fn get_custom_emoji<'a>(content: &'a str, buf: &'a (Vec<String>, Vec<String>)) -> Option<String> {
-    use std::fs::read_to_string;
-
-	if let Some(position) = buf.0.iter().position(|x| x == content) {
-		return Some(format!("<svg style=\"height:2.5rem; width:2.5rem;position:relative;top:0.5em;\">{}</svg>", read_to_string(buf.1[position].clone()).unwrap_or_else(|_| panic!("Couldn't read file {}", buf.1[position]))));
+fn get_custom_emoji<'a>(content: &'a str, buf: &'a Vec<String>) -> Option<String> {
+	if let Some(position) = buf.iter().position(|x| x == content) {
+		return Some(format!("<object style=\"height:2.5rem; width:2.5rem;position:relative;top:0.5em;\" data=\"custom_emojis/{}.svg\" type=\"image/svg+xml\"></object>", buf[position]));
 	}
 	None
 }

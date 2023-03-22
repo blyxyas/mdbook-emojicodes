@@ -1,6 +1,6 @@
 [package]
 name = "mdbook-emojicodes"
-version = "0.2.1"
+version = "0.2.2"
 edition = "2021"
 license = "MIT"
 description = "MDBook Preprocessor for converting your emojicodes (: cat :) into real emojis"
